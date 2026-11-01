@@ -16,6 +16,31 @@ resource "aws_iam_role" "ec2_ssm_ecr_role" {
   })
 }
 
+# Access to agent storage table
+resource "aws_iam_role_policy" "dynamodb_read_write" {
+  name = "ec2-dynamodb-read-write-policy"
+  role = aws_iam_role.ec2_ssm_ecr_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:Query"
+        ]
+        Resource = [
+          var.agent_storage_table_values["arn_table"],
+          var.agent_storage_table_values["arn_table_index"]
+        ]
+      }
+    ]
+  })
+}
+
 # Attach the Managed Policy for ECR Read-Only access
 resource "aws_iam_role_policy_attachment" "ecr_readonly" {
   role       = aws_iam_role.ec2_ssm_ecr_role.name
