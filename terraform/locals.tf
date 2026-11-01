@@ -1,3 +1,9 @@
+# Environment Variable
+variable "environment" {
+  type    = string
+  default = "development"
+}
+
 # Kubernetes Cluster Private IP Addresses
 variable "kubernetes_private_ips" {
   type    = list(string)
