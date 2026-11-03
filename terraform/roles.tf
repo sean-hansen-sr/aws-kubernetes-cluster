@@ -18,7 +18,7 @@ resource "aws_iam_role" "ec2_ssm_ecr_role" {
 
 # Access to agent storage table
 resource "aws_iam_role_policy" "dynamodb_read_write" {
-  name = "ec2-dynamodb-read-write-policy"
+  name = "ec2-dynamodb-bedrock-policy"
   role = aws_iam_role.ec2_ssm_ecr_role.id
 
   policy = jsonencode({
@@ -33,8 +33,20 @@ resource "aws_iam_role_policy" "dynamodb_read_write" {
           "dynamodb:Query"
         ]
         Resource = [
-          var.agent_storage_table_values["arn_table"],
-          var.agent_storage_table_values["arn_table_index"]
+          var.agent_storage_table_values["table_arn"],
+          var.agent_storage_table_values["table_index_arn"]
+        ]
+      },
+      {
+        Sid    = "AllowNovaLiteInference"
+        Effect = "Allow"
+        Action = [
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream"
+        ]
+        Resource = [
+          "arn:aws:bedrock:${var.region}::foundation-model/amazon.nova-lite-v1:0",
+          "arn:aws:bedrock:${var.region}:${data.aws_caller_identity.current.account_id}:inference-profile/us.amazon.nova-lite-v1:0"
         ]
       }
     ]

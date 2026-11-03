@@ -1,3 +1,12 @@
+# Region Variable
+variable "region" {
+  type    = string
+  default = "us-east-1"
+}
+
+# Fetch current AWS account ID
+data "aws_caller_identity" "current" {}
+
 # Environment Variable
 variable "environment" {
   type    = string
@@ -28,8 +37,7 @@ variable "agent_storage_table_values" {
 
   default = {
     name            = "agent-sessions-table"
-    arn_table       = "arn:aws:dynamodb:*:*:table/agent-sessions-table"
-    arn_table_index = "arn:aws:dynamodb:*:*:table/agent-sessions-table/index/*"
+    table_arn       = "arn:aws:dynamodb:*:*:table/agent-sessions-table"
+    table_index_arn = "arn:aws:dynamodb:*:*:table/agent-sessions-table/index/*"
   }
-
 }
