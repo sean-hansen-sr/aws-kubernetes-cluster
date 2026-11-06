@@ -141,6 +141,14 @@ resource "aws_security_group" "private_sg" {
     self        = true
   }
 
+  # All NodePort services (30000-32767) for Kubernetes
+  ingress {
+    from_port   = 30000
+    to_port     = 32767
+    protocol    = "tcp"
+    self        = true
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
