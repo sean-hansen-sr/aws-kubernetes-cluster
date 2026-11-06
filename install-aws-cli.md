@@ -1,4 +1,4 @@
-Before downloading, ensure your package index is updated and you have curl and unzip installed  
+**Before downloading, ensure your package index is updated and you have curl and unzip installed**  
 sudo apt update && sudo apt install -y curl unzip  
 
 Download and Run the Installer  
