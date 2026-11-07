@@ -29,8 +29,10 @@ resource "aws_iam_role_policy" "dynamodb_read_write" {
         Action = [
           "dynamodb:GetItem",
           "dynamodb:PutItem",
+          "dynamodb:UpdateItem",
           "dynamodb:DeleteItem",
-          "dynamodb:Query"
+          "dynamodb:Query",
+          "dynamodb:DescribeTable"
         ]
         Resource = [
           var.agent_storage_table_values["table_arn"],

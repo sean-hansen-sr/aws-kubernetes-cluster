@@ -1,11 +1,25 @@
+# Fetch current AWS account ID
+data "aws_caller_identity" "current" {}
+
+# Get Latest Ubuntu 22.04 AMI
+data "aws_ami" "ubuntu_latest" {
+  most_recent = true
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+  owners = ["099720109477"] # Canonical
+}
+
 # Region Variable
 variable "region" {
   type    = string
   default = "us-east-1"
 }
-
-# Fetch current AWS account ID
-data "aws_caller_identity" "current" {}
 
 # Environment Variable
 variable "environment" {
@@ -13,10 +27,10 @@ variable "environment" {
   default = "development"
 }
 
-# Kubernetes Cluster Private IP Addresses
-variable "kubernetes_private_ips" {
+# Kubernetes Backend Cluster Private IP Addresses
+variable "kubernetes_private_backend_ips" {
   type    = list(string)
-  default = ["10.0.2.10", "10.0.2.11", "10.0.2.12"]
+  default = ["10.0.3.10", "10.0.3.11", "10.0.3.12"]
 }
 
 # EC2 Setting Values

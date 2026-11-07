@@ -1,5 +1,5 @@
 # Get Latest Ubuntu 22.04 AMI
-data "aws_ami" "ubuntu" {
+data "aws_ami" "ubuntu_backend" {
   most_recent = true
   filter {
     name   = "name"
@@ -13,19 +13,19 @@ data "aws_ami" "ubuntu" {
 }
 
 # Deploy 3 Ubuntu VMs with No External IP
-resource "aws_instance" "ubuntu_vm" {
+resource "aws_instance" "ubuntu_backend_vm" {
   count                  = 3
   # Set Latest Ubuntu 22.04 AMI
-  # ami                    = data.aws_ami.ubuntu.id
+  # ami                    = data.aws_ami.ubuntu_backend.id
   # Set Specific AMI Image 
   ami                    = var.ec2_setting_values["ami"]
   instance_type          = var.ec2_setting_values["instance_type"]
-  subnet_id              = aws_subnet.private.id
-  vpc_security_group_ids = [aws_security_group.private_sg.id]
+  subnet_id              = aws_subnet.private_backend.id
+  vpc_security_group_ids = [aws_security_group.private_backend_sg.id]
   iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
 
   # Assign Private IP Address
-  private_ip = var.kubernetes_private_ips[count.index]
+  private_ip = var.kubernetes_private_backend_ips[count.index]
 
   # Configure the root storage drive to 60 GB
   root_block_device {
@@ -38,7 +38,7 @@ resource "aws_instance" "ubuntu_vm" {
   associate_public_ip_address = false
 
   tags = {
-    Name = count.index == 0 ? "ubuntu-control-plane-${count.index + 1}" : "ubuntu-worker-node-${count.index}"
+    Name = count.index == 0 ? "backend-control-plane-${count.index + 1}" : "backend-worker-node-${count.index}"
     Role = count.index == 0 ? "Control_Plane_${count.index + 1}" : "Worker_Node_${count.index}"
   }
 }
